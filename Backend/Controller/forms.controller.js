@@ -13,11 +13,10 @@ export const saveForm = async (req, res) => {
     }
 
     const form = new Form({ user_id: req.user._id, form_name, form_data });
-    console.log(form);
 
     await form.save();
-    
-    res.status(200).json({ message: 'Form saved successfully' });
+
+    res.status(200).json({ id: form._id, message: 'Form saved successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to save form' });
   }

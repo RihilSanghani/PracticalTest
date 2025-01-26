@@ -41,9 +41,21 @@ export const login = async (userData) => {
 export const saveForm = async (data) => {
     try {
         const response = await api.post('/forms/save', { form_name: data.form_name, form_data: data.form_data, authToken: authToken });
-        return response.data;
+        return response.data.id;
     } catch (error) {
         console.log("Error in save form:", error);
+        return error;
+    }
+};
+
+// get all the form
+
+export const getAllForms = async () => {
+    try {
+        const response = await api.post('/forms/list', {authToken});
+        return response.data;
+    } catch (error) {
+        console.log("Error in get all forms:", error);
         return error;
     }
 };

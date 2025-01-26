@@ -4,9 +4,12 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import Sidebar from '../Components/Sidebar';
 import Canvas from '../Components/Canvas';
 import { saveForm } from '../Lib/ApiHeandler';
+import { useNavigate } from 'react-router-dom';
 const CreateForm = () => {
     const [formName, setFormName] = useState("");
     const [formElements, setFormElements] = useState([]);
+
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -15,7 +18,13 @@ const CreateForm = () => {
             form_data: formElements,
         };
         const res = saveForm(formData)
-        console.log(res);
+        if(!res.id){
+            //redirect to home page 
+            navigate('/');
+        } 
+        else{
+            alert('There is something wrong with server : 404');
+        }
     }
     return (
         <>

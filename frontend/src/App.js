@@ -4,7 +4,6 @@ import Home from './Pages/Home';
 import Signup from './Pages/Signup';
 import Login from './Pages/Login';
 import NotFound from './Pages/NotFound';
-import Cookies from 'js-cookie';
 import CreateForm from './Pages/CreateForm';
 import FormList from './Pages/FormList';
 

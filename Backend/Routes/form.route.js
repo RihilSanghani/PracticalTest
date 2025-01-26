@@ -5,7 +5,7 @@ import { ProtectedUser } from '../Middleware/ProtectedUser.auth.js';
 const router = express();
 
 router.post('/save', ProtectedUser, saveForm);
-router.get('/list', ProtectedUser, getForms);
+router.post('/list', ProtectedUser, getForms);
 router.get('/:id', ProtectedUser, getForm);
 router.put('/update/:id', ProtectedUser, updateForm);
 
