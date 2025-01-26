@@ -3,16 +3,19 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Sidebar from '../Components/Sidebar';
 import Canvas from '../Components/Canvas';
+import { saveForm } from '../Lib/ApiHeandler';
 const CreateForm = () => {
     const [formName, setFormName] = useState("");
     const [formElements, setFormElements] = useState([]);
 
-    const saveForm = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
         const formData = {
-            formName,
-            formData: formElements,
+            form_name: formName,
+            form_data: formElements,
         };
-        console.log(formData);
+        const res = saveForm(formData)
+        console.log(res);
     }
     return (
         <>
@@ -26,7 +29,7 @@ const CreateForm = () => {
                             value={formName}
                             onChange={(e) => setFormName(e.target.value)}
                         />
-                        <button className="save-button" onClick={saveForm}>Save Form</button>
+                        <button className="save-button" onClick={handleSubmit}>Save Form</button>
                     </header>
                     <div className="main">
                         <Sidebar />

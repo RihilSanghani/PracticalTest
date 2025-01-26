@@ -12,8 +12,11 @@ export const saveForm = async (req, res) => {
       return res.status(400).json({ message: 'Form data and form name are required' });
     }
 
-    const form = new Form({ form_name, form_data });
+    const form = new Form({ user_id: req.user._id, form_name, form_data });
+    console.log(form);
+
     await form.save();
+    
     res.status(200).json({ message: 'Form saved successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to save form' });

@@ -9,7 +9,7 @@ import CreateForm from './Pages/CreateForm';
 import FormList from './Pages/FormList';
 
 function App() {
-  const authToken = Cookies.get('authToken');
+  const authToken = localStorage.getItem('authToken');
 
   return (
     <>

@@ -18,12 +18,10 @@ const Signup = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        // Add your API call here to sign up the user
         const res = signup(formData)
         console.log(res);
-        
     };
+    
     return (
         <>
             <div className="d-flex vh-100 justify-content-center align-items-center bg-light">

@@ -29,7 +29,7 @@ export const signUp = async (req, res) => {
         const newUser = new UserModels({ username, email, password: hashedPassword });
 
         //Save the user
-        const token = generateAuthToken(newUser._id, res)
+        const token = generateAuthToken(newUser._id)
         await newUser.save();
         res.status(201).json({ message: "User created successfully", user: newUser, authToken: token });
 
@@ -42,7 +42,7 @@ export const signUp = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        
+
         if (!password && !email) {
             return res.status(400).send({ message: "All fields are required" });
         }
@@ -55,7 +55,7 @@ export const login = async (req, res) => {
         if (!validPassword) {
             return res.status(400).send({ message: "Invalid password" });
         }
-        const token = generateAuthToken(user, res);
+        const token = generateAuthToken(user._id);
         res.json({ authToken: token });
 
     } catch (err) {

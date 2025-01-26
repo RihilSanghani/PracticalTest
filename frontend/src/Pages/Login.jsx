@@ -17,9 +17,7 @@ const Login = () => {
 
     const heandleSumbit = (e) => {
         e.preventDefault();
-        const res = login(formData)
-        console.log(res);
-        
+        login(formData)
     };
 
     return (
