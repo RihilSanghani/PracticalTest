@@ -15,7 +15,8 @@ const authToken = localStorage.getItem('authToken');
 export const signup = async (userData) => {
     try {
         const response = await api.post('/auth/signup', userData);
-        return response.data;
+        await localStorage.setItem('authToken', response.data.authToken);
+        return response.data.authToken;
     } catch (error) {
         console.log("Error in SignUp user:", error);
         return error;
@@ -26,9 +27,8 @@ export const signup = async (userData) => {
 export const login = async (userData) => {
     try {
         const response = await api.post('/auth/login', userData);
-        console.log(response.data);
-        localStorage.setItem('authToken', response.data.authToken);
-        return response.data;
+        await localStorage.setItem('authToken', response.data.authToken);
+        return response.data.authToken;
     } catch (error) {
         console.log("Error in Login user:", error);
         return error;
@@ -52,10 +52,36 @@ export const saveForm = async (data) => {
 
 export const getAllForms = async () => {
     try {
-        const response = await api.post('/forms/list', {authToken});
+        const response = await api.post('/forms/list', { authToken });
         return response.data;
     } catch (error) {
         console.log("Error in get all forms:", error);
+        return error;
+    }
+};
+
+
+// get form by id
+
+export const getFormById = async (id) => {
+    try {
+        const response = await api.post(`/forms/${id}`, { authToken });
+        return response.data;
+    } catch (error) {
+        console.log("Error in get form by id:", error);
+        return error;
+    }
+};
+
+// update form
+
+export const updateForm = async (id, data) => {
+    console.log(data);
+    try {
+        const response = await api.patch(`/forms/update/${id}`, { form_name: data.form_name, form_data: data.form_data, authToken });
+        return response.data;
+    } catch (error) {
+        console.log("Error in axios update form:", error);
         return error;
     }
 };

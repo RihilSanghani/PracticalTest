@@ -48,25 +48,23 @@ export const getForm = async (req, res) => {
 
 export const updateForm = async (req, res) => {
   try {
+    const { form_name, form_data } = req.body;
     if (!req.user.id) {
       return res.status(401).json({ message: 'Unauthorized user' });
     }
     if (!form_data && !form_name) {
       return res.status(400).json({ message: 'Form data and form name are required' });
     }
-    const formData = new Form({
-      form_name: req.body.form_name,
-      form_data: req.body.form_data,
-      user_id: req.user.id,
-    })
-    await Form.findByIdAndUpdate(req.params.id,
+
+    const updatedForm = await Form.findByIdAndUpdate(req.params.id,
       {
-        $set: { form_data: req.body.form_data, user_id: req.user.id, form_name: req.body.form_name },
+        $set: { form_data: req.body.form_data, form_name: req.body.form_name },
         $inc: { submissions: 1 }
       },
       { new: true }
     );
-    res.status(200).json({ message: 'Form updated successfully' });
+
+    res.status(200).json({ id: updatedForm.id, message: 'Form updated successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to update form' });
   }

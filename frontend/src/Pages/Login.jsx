@@ -2,10 +2,12 @@ import React, { useState } from 'react'
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { login } from '../Lib/ApiHeandler';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
 
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -15,9 +17,15 @@ const Login = () => {
         setPasswordVisible(!passwordVisible);
     };
 
-    const heandleSumbit = (e) => {
+    const heandleSumbit = async (e) => {
         e.preventDefault();
-        login(formData)
+        const Token = await login(formData)
+        if (Token) {
+            window.location.reload();
+            navigate("/");
+        } else {
+            alert("Invalid Credentials")
+        }
     };
 
     return (
@@ -76,6 +84,7 @@ const Login = () => {
                             <button type="submit" className="btn btn-primary w-100">
                                 Login
                             </button>
+                            <p className="mt-3 text-center">Don't have an account? <Link to="/signup">Sign up</Link></p>
                         </div>
                     </form>
                 </div>

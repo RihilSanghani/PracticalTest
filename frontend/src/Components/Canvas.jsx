@@ -1,92 +1,100 @@
-import React, { useState } from 'react'
-import { useDrop, useDrag } from "react-dnd";
-const Canvas = ({ formElements, setFormElements }) => {
-    const [currentElement, setCurrentElement] = useState(null);
-    const [showPopup, setShowPopup] = useState(false);
+    import React, { useState } from 'react'
+    import { useDrop, useDrag } from "react-dnd";
+    const Canvas = ({ formElements, setFormElements }) => {
+        const [currentElement, setCurrentElement] = useState(null);
+        const [showPopup, setShowPopup] = useState(false);
 
-    // Drop functionality for new elements
-    const [{ isOver }, drop] = useDrop(() => ({
-        accept: "element",
-        drop: (item) => {
-            setCurrentElement({
-                type: item.type,
-                properties: { label: "", placeholder: "", required: false },
-                position: { x: 0, y: 0 },
-            });
-            setShowPopup(true);
-        },
-        collect: (monitor) => ({
-            isOver: !!monitor.isOver(),
-        }),
-    }));
-
-    // Submit popup form
-    const handlePopupSubmit = (updatedProperties) => {
-        setFormElements((prev) => [
-            ...prev,
-            {
-                ...currentElement,
-                properties: updatedProperties,
-                position: { x: 0, y: formElements.length * 50 }, // Default position
-            },
-        ]);
-        setCurrentElement(null);
-        setShowPopup(false);
-    };
-
-    // Drag functionality for existing elements
-    const Element = ({ el, index }) => {
-        const [{ isDragging }, drag] = useDrag(() => ({
-          type: "existing-element",
-          item: { index },
-          collect: (monitor) => ({
-            isDragging: !!monitor.isDragging(),
-          }),
-        }));
-      
         const [{ isOver }, drop] = useDrop(() => ({
-          accept: "existing-element",
-          hover: (item) => {
-            if (item.index !== index) {
-              const newElements = [...formElements];
-              const draggedElement = newElements.splice(item.index, 1)[0];
-              newElements.splice(index, 0, draggedElement);
-              setFormElements(newElements);
-            }
-          },
+            accept: "element",
+            drop: (item) => {
+                setCurrentElement({
+                    type: item.type,
+                    properties: { label: "", placeholder: "", required: false },
+                    position: { x: 0, y: 0 },
+                });
+                setShowPopup(true);
+            },
+            collect: (monitor) => ({
+                isOver: !!monitor.isOver(),
+            }),
         }));
-      
-        return (
-          <div
-            ref={(node) => drag(drop(node))}
-            className={`form-element ${isDragging ? "dragging" : ""}`}
-          >
-            <label>{el.properties.label}:</label>
-            <input
-              type={el.type}
-              placeholder={el.properties.placeholder}
-              required={el.properties.required}
-              readOnly
-            />
-            <button
-              className="delete-button"
-              onClick={() =>
-                setFormElements((prev) => prev.filter((_, i) => i !== index))
-              }
+
+        const handlePopupSubmit = (updatedProperties) => {
+            const newElement = {
+                type: currentElement.type,
+                properties: updatedProperties,
+                position: {
+                    x: 0,
+                    y: formElements.length, // Increment index dynamically
+                },
+            };
+
+            const updatedElements = [...formElements, newElement];
+            setFormElements(updatedElements); // Update parent state
+
+            setCurrentElement(null);
+            setShowPopup(false);
+        };
+
+        const handleDelete = (index) => {
+            const updatedElements = formElements
+                .filter((_, i) => i !== index) // Remove the element
+                .map((el, idx) => ({ ...el, position: { ...el.position, y: idx } })); // Recalculate indices
+
+            setFormElements(updatedElements);
+        };
+
+        const Element = ({ el, index }) => {
+            const [{ isDragging }, drag] = useDrag(() => ({
+            type: "existing-element",
+            item: { index },
+            collect: (monitor) => ({
+                isDragging: !!monitor.isDragging(),
+            }),
+            }));
+        
+            return (
+            <div
+                ref={drag}
+                className={`form-element ${isDragging ? "dragging" : ""}`}
+                style={{ marginBottom: "10px" }}
             >
-              Delete
-            </button>
-          </div>
-        );
-      };
-    return (
-        <>
-            <div ref={drop} className={`canvas ${isOver ? "hovered" : ""}`}>
-                {formElements.map((el, idx) => (
-                    <Element key={idx} el={el} index={idx} />
-                ))}
+                <label>{el.properties.label || "Label"}:</label>
+                {el.type === "select" ? (
+                <select className="form-control">
+                    {el.properties.options.map((option, idx) => (
+                    <option key={idx} value={option}>
+                        {option}
+                    </option>
+                    ))}
+                </select>
+                ) : (
+                <input
+                    type={el.type}
+                    placeholder={el.properties.placeholder || "Placeholder"}
+                    required={el.properties.required}
+                    className="form-control"
+                    style={{ display: "block", marginBottom: "5px" }}
+                />
+                )}
+                <button
+                className="btn btn-danger btn-sm"
+                onClick={() => handleDelete(index)}
+                >
+                Delete
+                </button>
+            </div>
+            );
+        };
+
+        return (
+            <div ref={drop} className={`canvas ${isOver ? "hovered" : ""}`} style={{ padding: "10px", border: "1px solid #ccc" }}>
+                {Array.isArray(formElements) &&
+                    formElements.map((el, idx) => (
+                        <Element key={idx} el={el} index={idx} />
+                    ))}
                 {showPopup && (
-                    <div className="popup">
+                    <div className="popup" style={{ position: "absolute", background: "#fff", padding: "10px", border: "1px solid #ccc", zIndex: 100 }}>
                         <h3>Set Properties</h3>
                         <label>
                             Label:
@@ -100,6 +108,23 @@ const Canvas = ({ formElements, setFormElements }) => {
                                 }
                             />
                         </label>
+                        {currentElement?.type === "select" && (
+                            <label>
+                                Options (comma-separated):
+                                <input
+                                    type="text"
+                                    onChange={(e) =>
+                                        setCurrentElement((prev) => ({
+                                            ...prev,
+                                            properties: {
+                                                ...prev.properties,
+                                                options: e.target.value.split(","),
+                                            },
+                                        }))
+                                    }
+                                />
+                            </label>
+                        )}
                         <label>
                             Placeholder:
                             <input
@@ -124,14 +149,13 @@ const Canvas = ({ formElements, setFormElements }) => {
                                 }
                             />
                         </label>
-                        <button onClick={() => handlePopupSubmit(currentElement.properties)}>
+                        <button className="btn btn-primary btn-sm" onClick={() => handlePopupSubmit(currentElement.properties)}>
                             OK
                         </button>
                     </div>
                 )}
             </div>
-        </>
-    )
-}
+        );
+    };
 
-export default Canvas
+    export default Canvas;

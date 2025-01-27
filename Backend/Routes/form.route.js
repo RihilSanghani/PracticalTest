@@ -6,7 +6,7 @@ const router = express();
 
 router.post('/save', ProtectedUser, saveForm);
 router.post('/list', ProtectedUser, getForms);
-router.get('/:id', ProtectedUser, getForm);
-router.put('/update/:id', ProtectedUser, updateForm);
+router.post('/:id', ProtectedUser, getForm);
+router.patch('/update/:id', ProtectedUser, updateForm);
 
 export default router;

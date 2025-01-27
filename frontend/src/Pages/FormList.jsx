@@ -28,7 +28,7 @@ const FormList = () => {
   };
 
   const handleEditForm = (formId) => {
-    navigate(`/form/edit/${formId}`);
+    navigate(`/editform/${formId}`);
   };
 
   const handleCloseModal = () => {
@@ -38,14 +38,25 @@ const FormList = () => {
   const handleCreateForm = () => {
     navigate(`/createform`);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    window.location.reload();
+    navigate("/");
+  };
+
   return (
     <>
       <div className="form-list container mt-4">
+        <button className="btn btn-error" onClick={handleLogout}>
+          Logout
+        </button>
         <div className="d-flex justify-content-between align-items-center">
           <h2>Form List</h2>
           <button className="btn btn-success" onClick={handleCreateForm}>
             Create New Form
           </button>
+
         </div>
         <ul className="list-group mt-3">
           {forms.map((form) => (
@@ -88,6 +99,27 @@ const FormList = () => {
                         style={{ marginRight: "10px" }}
                       />
                       <label>{el.properties.label || "Label"}</label>
+                    </>
+                  ) : el.type === "select" ? (
+                    <>
+                      <label style={{ marginRight: "10px", flexShrink: 0 }}>{el.properties.label || "Label"}:</label>
+                      <select className="form-control" style={{ flex: 1 }}>
+                        {el.properties.options?.map((option, idx) => (
+                          <option key={idx} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </>
+                  ) : el.type === "textarea" ? (
+                    <>
+                      <label style={{ marginRight: "10px", flexShrink: 0 }}>{el.properties.label || "Label"}:</label>
+                      <textarea
+                        placeholder={el.properties.placeholder || "Placeholder"}
+                        required={el.properties.required}
+                        className="form-control"
+                        style={{ flex: 1 }}
+                      />
                     </>
                   ) : (
                     <>

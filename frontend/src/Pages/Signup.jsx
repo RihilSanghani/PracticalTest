@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { signup } from '../Lib/ApiHeandler';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Signup = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
-
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: '',
         email: '',
@@ -16,12 +17,17 @@ const Signup = () => {
         setPasswordVisible(!passwordVisible);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const res = signup(formData)
-        console.log(res);
+        const res = await signup(formData)
+        if (res) {
+            alert('Signup successful! Please login.');
+            navigate("/")
+        } else {
+            alert('Failed to signup. Please try again.');
+        }
     };
-    
+
     return (
         <>
             <div className="d-flex vh-100 justify-content-center align-items-center bg-light">
@@ -60,7 +66,7 @@ const Signup = () => {
                                     className="form-control"
                                     id="email"
                                     value={formData.email}
-                                    onChange={(e)=>setFormData({...formData, email: e.target.value})}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     placeholder="Enter your email"
                                     required
                                 />
@@ -79,7 +85,7 @@ const Signup = () => {
                                     className="form-control"
                                     id="password"
                                     value={formData.password}
-                                    onChange={(e) => setFormData({...formData, password: e.target.value })}
+                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                     placeholder="Enter your password"
                                     required
                                 />
@@ -98,6 +104,7 @@ const Signup = () => {
                             <button type="submit" className="btn btn-primary w-100">
                                 Signup
                             </button>
+                            <p className="mt-3 text-center">Already have an account? <Link to="/login">Login</Link></p>
                         </div>
                     </form>
                 </div>
