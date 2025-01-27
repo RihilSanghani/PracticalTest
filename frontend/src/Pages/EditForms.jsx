@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DndProvider } from 'react-dnd';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Sidebar from '../Components/Sidebar';
 import Canvas from '../Components/Canvas';
 import { getFormById, updateForm } from '../Lib/ApiHeandler';
@@ -18,7 +18,7 @@ const EditForms = () => {
 
     useEffect(() => {
         fetchForm();
-    }, [id]);
+    }, []);
 
     const fetchForm = async () => {
         try {
@@ -80,6 +80,11 @@ const EditForms = () => {
                         <button className="save-button mx-1" onClick={handleSave}>
                             Save Changes
                         </button>
+                        <Link to="/">
+                            <button className="save-button mx-1">
+                                Back
+                            </button>
+                        </Link>
                     </header>
                     <div className="main">
                         <Sidebar />

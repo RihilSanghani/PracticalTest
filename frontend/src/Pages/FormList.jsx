@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -67,6 +67,23 @@ const FormList = () => {
                 onClick={() => handleViewForm(form)}
               >
                 {form.form_name}
+              </span>
+              <span
+                className="form-submitions"
+              >
+                Times Edited : {form.submissions}
+              </span>
+              <span
+                className="form-submitions"
+              >
+                Created At: {new Date(form.created_at).toLocaleString('en-US', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                })}
               </span>
               <button
                 className="btn btn-primary btn-sm"

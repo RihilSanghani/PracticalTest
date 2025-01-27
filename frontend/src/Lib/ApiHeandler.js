@@ -35,9 +35,7 @@ export const login = async (userData) => {
     }
 };
 
-
 // save form 
-
 export const saveForm = async (data) => {
     try {
         const response = await api.post('/forms/save', { form_name: data.form_name, form_data: data.form_data, authToken: authToken });
@@ -49,7 +47,6 @@ export const saveForm = async (data) => {
 };
 
 // get all the form
-
 export const getAllForms = async () => {
     try {
         const response = await api.post('/forms/list', { authToken });
@@ -62,7 +59,6 @@ export const getAllForms = async () => {
 
 
 // get form by id
-
 export const getFormById = async (id) => {
     try {
         const response = await api.post(`/forms/${id}`, { authToken });
@@ -74,7 +70,6 @@ export const getFormById = async (id) => {
 };
 
 // update form
-
 export const updateForm = async (id, data) => {
     console.log(data);
     try {

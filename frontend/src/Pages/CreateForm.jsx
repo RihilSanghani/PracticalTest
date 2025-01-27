@@ -17,7 +17,6 @@ const CreateForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Add your validation logic here
         if (!formName || formElements.length === 0) {
             alert('Form name and at least one element should be provided');
             return;
@@ -29,7 +28,6 @@ const CreateForm = () => {
         };
         const res = saveForm(formData);
         if (!res.id) {
-            // Redirect to home page
             navigate('/');
         } else {
             alert('There is something wrong with server: 404');
